@@ -1,14 +1,22 @@
 package main
 
 import (
+	"database/sql"
+	"freecodecamp_golang_course/internal/database"
 	"log"
 	"net/http"
 	"os"
 
+	"github.com/annbelievable/go_rss_agg/internal/database"
 	"github.com/go-chi/chi"
 	"github.com/go-chi/cors"
 	"github.com/joho/godotenv"
+	_ "github.com/lib/pq"
 )
+
+type apiConfig struct {
+	DB *database.Queries
+}
 
 func main() {
 	godotenv.Load(".env")
@@ -16,6 +24,20 @@ func main() {
 	portString := os.Getenv("PORT")
 	if portString == "" {
 		log.Fatal("PORT is not found in the environment")
+	}
+
+	dbURL := os.Getenv("DB_URL")
+	if dbURL == "" {
+		log.Fatal("DB_URL is not found in the environment")
+	}
+
+	conn, err := sql.Open("postgres", dbURL)
+	if err != nil {
+		log.Fatal("Cannot connect to database")
+	}
+
+	apiCfg := apiConfig{
+		DB: database.New(conn),
 	}
 
 	router := chi.NewRouter()
@@ -34,6 +56,7 @@ func main() {
 	// by doing below, we limit the handler to handle GET method request only
 	v1Router.Get("/health", handlerReadiness)
 	v1Router.Get("/error", handlerErr)
+	v1Router.Post("/users", apiCfg.handlerCreateUser)
 
 	router.Mount("/v1", v1Router)
 
