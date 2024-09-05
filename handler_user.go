@@ -3,9 +3,10 @@ package main
 import (
 	"encoding/json"
 	"fmt"
-	"freecodecamp_golang_course/internal/database"
 	"net/http"
 	"time"
+
+	"github.com/annbelievable/go_rss_agg/internal/database"
 
 	"github.com/google/uuid"
 )

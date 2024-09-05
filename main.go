@@ -2,7 +2,6 @@ package main
 
 import (
 	"database/sql"
-	"freecodecamp_golang_course/internal/database"
 	"log"
 	"net/http"
 	"os"
@@ -66,7 +65,7 @@ func main() {
 	}
 
 	log.Printf("Server starting on PORT: %v", portString)
-	err := srv.ListenAndServe()
+	err = srv.ListenAndServe()
 
 	if err != nil {
 		log.Fatal(err)
